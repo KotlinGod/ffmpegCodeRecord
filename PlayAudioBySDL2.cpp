@@ -1,40 +1,11 @@
-/**
- * 最简单的基于FFmpeg的音频播放器 2
- * Simplest FFmpeg Audio Player 2
- *
- * 雷霄骅 Lei Xiaohua
- * leixiaohua1020@126.com
- * 中国传媒大学/数字电视技术
- * Communication University of China / Digital TV Technology
- * http://blog.csdn.net/leixiaohua1020
- *
- * 本程序实现了音频的解码和播放。
- * 是最简单的FFmpeg音频解码方面的教程。
- * 通过学习本例子可以了解FFmpeg的解码流程。
- *
- * 该版本使用SDL 2.0替换了第一个版本中的SDL 1.0。
- * 注意：SDL 2.0中音频解码的API并无变化。唯一变化的地方在于
- * 其回调函数的中的Audio Buffer并没有完全初始化，需要手动初始化。
- * 本例子中即SDL_memset(stream, 0, len);
- *
- * This software decode and play audio streams.
- * Suitable for beginner of FFmpeg.
- *
- * This version use SDL 2.0 instead of SDL 1.2 in version 1
- * Note:The good news for audio is that, with one exception,
- * it's entirely backwards compatible with 1.2.
- * That one really important exception: The audio callback
- * does NOT start with a fully initialized buffer anymore.
- * You must fully write to the buffer in all cases. In this
- * example it is SDL_memset(stream, 0, len);
- *
- * Version 2.0
- */
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
 
 
+/**
+ * 通过sdl播放音频。
+ */
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -43,11 +14,6 @@ extern "C" {
 }
 
 #define MAX_AUDIO_FRAME_SIZE 192000 // 1 second of 48khz 32bit audio
-
-//Output PCM
-#define OUTPUT_PCM 1
-//Use SDL
-#define USE_SDL 1
 
 //Buffer:
 //|-----------|-------------|
@@ -91,7 +57,6 @@ int main(int argc, char *argv[]) {
     int64_t in_channel_layout;
     struct SwrContext *au_convert_ctx = nullptr;
 
-    FILE *pFile = nullptr;
     char url[] = "test.mp3";
 
     av_register_all();
@@ -140,9 +105,6 @@ int main(int argc, char *argv[]) {
     }
 
 
-#if OUTPUT_PCM
-    pFile = fopen("output.pcm", "wb");
-#endif
 
     packet = av_packet_alloc();
     av_init_packet(packet);
@@ -155,7 +117,6 @@ int main(int argc, char *argv[]) {
     out_buffer = (uint8_t *) av_malloc(MAX_AUDIO_FRAME_SIZE * 2);
     pFrame = av_frame_alloc();
 //SDL------------------
-#if USE_SDL
     //Init
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
         printf("Could not initialize SDL - %s\n", SDL_GetError());
@@ -176,8 +137,6 @@ int main(int argc, char *argv[]) {
         printf("can't open audio.\n");
         return -1;
     }
-#endif
-
     //FIX:Some Codec's Context Information is missing
     in_channel_layout = av_get_default_channel_layout(pCodecCtx->channels);
     //Swr
@@ -199,14 +158,9 @@ int main(int argc, char *argv[]) {
                 swr_convert(au_convert_ctx, &out_buffer, MAX_AUDIO_FRAME_SIZE, (const uint8_t **) pFrame->data, pFrame->nb_samples);
                 printf("index:%5d\t pts:%lld\t packet size:%d\n", index, packet->pts, packet->size);
 
-#if OUTPUT_PCM
-                //Write PCM
-                fwrite(out_buffer, 1, out_buffer_size, pFile);
-#endif
                 index++;
             }
 
-#if USE_SDL
             while (audio_len > 0)//Wait until finish
                 SDL_Delay(1);
 
@@ -216,21 +170,14 @@ int main(int argc, char *argv[]) {
             audio_len = out_buffer_size;
             audio_pos = audio_chunk;
 
-#endif
         }
         av_free_packet(packet);
     }
 
     swr_free(&au_convert_ctx);
 
-#if USE_SDL
     SDL_CloseAudio();//Close SDL
     SDL_Quit();
-#endif
-
-#if OUTPUT_PCM
-    fclose(pFile);
-#endif
     av_free(out_buffer);
     avcodec_close(pCodecCtx);
     avformat_close_input(&pFormatCtx);

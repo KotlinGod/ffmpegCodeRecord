@@ -1,6 +1,9 @@
 //
 // Created by 李兵 on 2019-04-09.
 //
+/**
+ * 打印视频相关信息
+ */
 #include "iostream"
 
 extern "C" {

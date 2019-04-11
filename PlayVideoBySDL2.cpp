@@ -1,5 +1,8 @@
 #include <iostream>
 
+/**
+ * 通过sdl播放视频
+ */
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -62,8 +65,6 @@ int main(int argc, char *argv[]) {
 
     char filepath[] = "test2.mp4";
 
-//    FILE *fp_yuv;
-
 //    av_register_all();
 //    avformat_network_init();
 
@@ -106,26 +107,24 @@ int main(int argc, char *argv[]) {
     pFrame = av_frame_alloc();
     pFrameYUV = av_frame_alloc();
 
-    out_buffer = (uint8_t *) av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P, pCodecCtx->width/2, pCodecCtx->height/2, 1) * sizeof(uint8_t));
-    av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize, out_buffer, AV_PIX_FMT_YUV420P, pCodecCtx->width/2, pCodecCtx->height/2, 1);
+    out_buffer = (uint8_t *) av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P, pCodecCtx->width / 2, pCodecCtx->height / 2, 1) * sizeof(uint8_t));
+    av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize, out_buffer, AV_PIX_FMT_YUV420P, pCodecCtx->width / 2, pCodecCtx->height / 2, 1);
 
     //Output Info-----------------------------
     printf("---------------- File Information ---------------\n");
     av_dump_format(pFormatCtx, 0, filepath, 0);
     printf("-------------------------------------------------\n");
 
-    img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width/2, pCodecCtx->height/2, AV_PIX_FMT_YUV420P, SWS_BICUBIC, nullptr, nullptr, nullptr);
+    img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width / 2, pCodecCtx->height / 2, AV_PIX_FMT_YUV420P, SWS_BICUBIC, nullptr, nullptr, nullptr);
 
-
-//    fp_yuv = fopen("output.yuv", "wb+");
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
         printf("Could not initialize SDL - %s\n", SDL_GetError());
         return -1;
     }
     //SDL 2.0 Support for multiple windows
-    screen_w = pCodecCtx->width/2;
-    screen_h = pCodecCtx->height/2;
+    screen_w = pCodecCtx->width / 2;
+    screen_h = pCodecCtx->height / 2;
     screen = SDL_CreateWindow("Simplest ffmpeg player's Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_w, screen_h, SDL_WINDOW_OPENGL);
 
     if (!screen) {
@@ -135,7 +134,7 @@ int main(int argc, char *argv[]) {
     sdlRenderer = SDL_CreateRenderer(screen, -1, 0);
     //IYUV: Y + U + V  (3 planes)
     //YV12: Y + V + U  (3 planes)
-    sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, pCodecCtx->width/2, pCodecCtx->height/2);
+    sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, pCodecCtx->width / 2, pCodecCtx->height / 2);
 
     sdlRect.x = 0;
     sdlRect.y = 0;
@@ -175,11 +174,6 @@ int main(int argc, char *argv[]) {
                 SDL_RenderCopy(sdlRenderer, sdlTexture, nullptr, nullptr);
                 SDL_RenderPresent(sdlRenderer);
                 //SDL End-----------------------
-
-//                int y_size = pCodecCtx->width * pCodecCtx->height;
-//                fwrite(pFrame->data[0], 1, y_size, fp_yuv);    //Y
-//                fwrite(pFrame->data[1], 1, y_size / 4, fp_yuv);  //U
-//                fwrite(pFrame->data[2], 1, y_size / 4, fp_yuv);  //V
             }
             av_packet_unref(packet);
         } else if (event.type == SDL_KEYDOWN) {
@@ -202,7 +196,6 @@ int main(int argc, char *argv[]) {
     av_frame_free(&pFrame);
     avcodec_close(pCodecCtx);
     avformat_close_input(&pFormatCtx);
-//    fclose(fp_yuv);
     return 0;
 }
 

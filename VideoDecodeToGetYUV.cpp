@@ -4,6 +4,10 @@
 
 #include <iostream>
 
+
+/**
+ * 提取视频中的yuv数据。
+ */
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"

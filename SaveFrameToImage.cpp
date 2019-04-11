@@ -1,3 +1,6 @@
+/**
+ * 保存每帧数据为图片
+ */
 #include <iostream>
 extern "C" {
 #include "libavformat/avformat.h"

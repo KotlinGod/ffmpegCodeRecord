@@ -2,6 +2,10 @@
 #include<iostream>
 #include "valarray"
 
+
+/**
+ * 打印ffmpeg相关信息
+ */
 extern "C" {
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"

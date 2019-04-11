@@ -3,6 +3,9 @@
 //
 
 
+/**
+ * 通过sdl播放yuv原始视频。
+ */
 #include <iostream>
 
 extern "C" {

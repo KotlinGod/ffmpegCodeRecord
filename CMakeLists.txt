@@ -9,15 +9,15 @@ include_directories(../untitled)
 link_directories(/usr/local/Cellar/ffmpeg/4.1.2/lib/)
 link_directories(/usr/local/Cellar/sdl2/2.0.9_1/lib/)
 
-set(SOURCE_FILES main.cpp)
-set(SOURCE_FILES simplest_ffmpeg_player.cpp)
-set(SOURCE_FILES demo2.cpp)
-set(SOURCE_FILES demo.cpp)
-set(SOURCE_FILES decoderDemo.cpp)
-set(SOURCE_FILES yuvplay.cpp)
-set(SOURCE_FILES audioPlay.cpp)
+set(SOURCE_FILES SaveFrameToImage.cpp)
+set(SOURCE_FILES PlayVideoBySDL2.cpp)
+set(SOURCE_FILES MediaInformationLog.cpp)
+set(SOURCE_FILES FFMpegInformationLog.cpp)
+set(SOURCE_FILES VideoDecodeToGetYUV.cpp)
+set(SOURCE_FILES PlayYUVBySDL2.cpp)
+set(SOURCE_FILES PlayAudioBySDL2.cpp)
 
-add_executable(untitled  audioPlay.cpp)
+add_executable(untitled PlayAudioBySDL2.cpp AudioDecodeToGetPCM.cpp)
 
 target_link_libraries( # Specifies the target library.
         untitled
