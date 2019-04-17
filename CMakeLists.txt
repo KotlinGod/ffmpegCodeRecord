@@ -17,7 +17,7 @@ link_directories(/usr/local/Cellar/sdl2/2.0.9_1/lib/)
 #set(SOURCE_FILES PlayYUVBySDL2.cpp)
 #set(SOURCE_FILES PlayAudioBySDL2.cpp)
 
-add_executable(untitled sdlDemo/SDL_DEMO1.cpp)
+add_executable(untitled  sdlDemo/SDLYUV.cpp)
 
 target_link_libraries( # Specifies the target library.
         untitled
