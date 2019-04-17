@@ -31,17 +31,18 @@ int main() {
         return 1;
     }
     SDL_Texture *tex = nullptr;
-    tex = SDL_CreateTextureFromSurface(ren, bmp);
-    SDL_FreeSurface(bmp);
+//    tex = SDL_CreateTextureFromSurface(ren, bmp);
+//    SDL_FreeSurface(bmp);
 
-    SDL_SetRenderDrawColor(ren, 255, 255, 0, 0);
-    SDL_RenderClear(ren);
-    SDL_RenderCopy(ren, tex, NULL, NULL);
-    SDL_RenderPresent(ren);
+
+    tex = SDL_CreateTexture(ren, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_TARGET, 600, 600);
+
+
+    SDL_Rect rect;
     bool quit = true;
     SDL_Event event;
     do {
-        SDL_WaitEvent(&event);
+        SDL_PollEvent(&event);
         switch (event.type) {
             case SDL_QUIT:
                 quit = false;
@@ -50,6 +51,22 @@ int main() {
 //                SDL_log("event type is %d", event.type);
                 break;
         }
+
+        rect.w = 30;
+        rect.h = 30;
+        rect.x = rand() % 600;
+        rect.y = rand() % 600;
+        SDL_SetRenderTarget(ren, tex);
+        SDL_SetRenderDrawColor(ren, 0, 0, 0, 0);
+        SDL_RenderClear(ren);
+        SDL_RenderDrawRect(ren, &rect);
+        SDL_SetRenderDrawColor(ren, 255, 0, 0, 0);
+        SDL_RenderFillRect(ren, &rect);
+
+        SDL_SetRenderTarget(ren, nullptr);
+        SDL_RenderCopy(ren, tex, NULL, NULL);
+        SDL_RenderPresent(ren);
+        SDL_Delay(50);
     } while (quit);
     SDL_DestroyTexture(tex);
     SDL_DestroyRenderer(ren);
