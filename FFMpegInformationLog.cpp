@@ -57,6 +57,10 @@ char *avformatInfo() {
         outFormat = outFormat->next;
     }
     return info;
+
+
+
+
 }
 
 char *avcodecInfo() {

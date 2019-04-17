@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
     packet = av_packet_alloc();
     av_init_packet(packet);
     //Out Audio Param
-    //nb_samples: AAC-1024 MP3-1152
+    //nb_samples: AAC-1024 MP3-1152 音频的一个AVFrame中可能包含多个音频帧，在此标记包含了几个
     AVSampleFormat out_sample_fmt = AV_SAMPLE_FMT_S16;
     //Out Buffer Size
     int out_buffer_size = av_samples_get_buffer_size(nullptr, pCodecCtx->channels, pCodecCtx->frame_size, out_sample_fmt, 1);

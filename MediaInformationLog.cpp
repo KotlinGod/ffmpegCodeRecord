@@ -21,7 +21,7 @@ int main() {
 
     int videoIndex = -1, audioIndex = -1;
     int iHour, iMinute, iSecond, iTotalSeconds;//HH:MM:SS
-    const char *fileName = "test.mp4";
+    const char *fileName = "test2.mp4";
 
     av_register_all();
     if (avformat_open_input(&avFormatContext, fileName, nullptr, nullptr) != 0) {
